@@ -3,7 +3,7 @@ const cors = require('cors');
 const port = process.env.PORT || 5000
 const app = express()
 require('dotenv').config()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 
 // midleWare  
@@ -22,29 +22,55 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run() {
     try {
-        const reviewCollection = client.db('review').collection('allReview')
+        const serviceCollection = client.db('photoService').collection('allPhotoService')
+        const reviewCollection = client.db('reviewData').collection('allReviewData')
 
-        app.get('/home-services', async (req, res) => {
+
+        // form data api review 
+        app.post('/review', async (req, res) => {
+            const review = req.body
+            const result = await reviewCollection.insertOne(review)
+            res.send(result)
+        })
+
+        app.get('/review', async (req, res) => {
             const query = {}
             const cursor = reviewCollection.find(query)
+            const result = await cursor.toArray()
+            res.send(result)
+        })
+
+        // 
+        app.get('/home-services', async (req, res) => {
+            const query = {}
+            const cursor = serviceCollection.find(query)
             const result = await cursor.limit(3).toArray()
             res.send(result)
         })
 
         app.get('/service', async (req, res) => {
             const query = {}
-            const cursor = reviewCollection.find(query)
+            const cursor = serviceCollection.find(query)
             const result = await cursor.limit(3).toArray()
             // const result = await cursor.toArray()
             res.send(result)
         })
         app.get('/services', async (req, res) => {
             const query = {}
-            const cursor = reviewCollection.find(query)
+            const cursor = serviceCollection.find(query)
             // const result2 = await cursor.limit(3).toArray()
             const result2 = await cursor.toArray()
             res.send(result2)
         })
+        app.get('/services/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: ObjectId(id) }
+            const cursor = serviceCollection.find(query)
+            // const result2 = await cursor.limit(3).toArray()
+            const result2 = await cursor.toArray()
+            res.send(result2)
+        })
+
     }
     finally {
 
