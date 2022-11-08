@@ -34,31 +34,23 @@ async function run() {
         })
 
         app.get('/review', async (req, res) => {
-            const query = {}
+            let query = {}
             const cursor = reviewCollection.find(query)
             const result = await cursor.toArray()
             res.send(result)
         })
 
-        // 
-        app.get('/home-services', async (req, res) => {
-            const query = {}
-            const cursor = serviceCollection.find(query)
-            const result = await cursor.limit(3).toArray()
-            res.send(result)
-        })
+
 
         app.get('/service', async (req, res) => {
             const query = {}
             const cursor = serviceCollection.find(query)
             const result = await cursor.limit(3).toArray()
-            // const result = await cursor.toArray()
             res.send(result)
         })
         app.get('/services', async (req, res) => {
             const query = {}
             const cursor = serviceCollection.find(query)
-            // const result2 = await cursor.limit(3).toArray()
             const result2 = await cursor.toArray()
             res.send(result2)
         })
