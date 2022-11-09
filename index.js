@@ -20,7 +20,6 @@ app.use(express.json())
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.w4v9v80.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-console.log(uri)
 
 async function run() {
     try {
@@ -43,19 +42,33 @@ async function run() {
                     seviceid: req.query.seviceid
                 }
             }
+            if (req.query.email) {
+                query = {
+                    email: req.query.email
+                }
+            }
+            console.log(req.query.email)
             const cursor = reviewCollection.find(query)
             const result = await cursor.toArray()
+            res.send(result)
+        })
+        // delete method 
+        app.delete('/review/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { seviceid: id }
+            const result = await reviewCollection.deleteOne(query)
             res.send(result)
         })
 
 
 
-        // app.get('/service', async (req, res) => {
-        //     const query = {}
-        //     const cursor = serviceCollection.find(query)
-        //     const result = await cursor.limit(3).toArray()
-        //     res.send(result)
-        // })
+        app.get('/limitservice', async (req, res) => {
+            const query = {}
+            const cursor = serviceCollection.find(query)
+            const result = await cursor.limit(3).toArray()
+            res.send(result)
+        })
+        //
         app.get('/services', async (req, res) => {
             const query = {}
             const cursor = serviceCollection.find(query)
@@ -70,6 +83,8 @@ async function run() {
             const result2 = await cursor.toArray()
             res.send(result2)
         })
+
+
 
     }
     finally {
