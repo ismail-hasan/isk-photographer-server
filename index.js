@@ -15,10 +15,12 @@ app.use(express.json())
 
 // mongodb database codes 
 
+// process.env.DB_USER
+// process.env.DB_PASSWORD
 
-const uri = "mongodb+srv://ReviewAssignment:tIOSPOkR90zpwrOo@cluster0.w4v9v80.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.w4v9v80.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-
+console.log(uri)
 
 async function run() {
     try {
@@ -28,13 +30,19 @@ async function run() {
 
         // form data api review 
         app.post('/review', async (req, res) => {
-            const review = req.body
-            const result = await reviewCollection.insertOne(review)
+            const user = req.body
+            const result = await reviewCollection.insertOne(user)
             res.send(result)
         })
 
         app.get('/review', async (req, res) => {
+            console.log(req.query.seviceid)
             let query = {}
+            if (req.query.seviceid) {
+                query = {
+                    seviceid: req.query.seviceid
+                }
+            }
             const cursor = reviewCollection.find(query)
             const result = await cursor.toArray()
             res.send(result)
@@ -42,23 +50,23 @@ async function run() {
 
 
 
-        app.get('/service', async (req, res) => {
-            const query = {}
-            const cursor = serviceCollection.find(query)
-            const result = await cursor.limit(3).toArray()
-            res.send(result)
-        })
+        // app.get('/service', async (req, res) => {
+        //     const query = {}
+        //     const cursor = serviceCollection.find(query)
+        //     const result = await cursor.limit(3).toArray()
+        //     res.send(result)
+        // })
         app.get('/services', async (req, res) => {
             const query = {}
             const cursor = serviceCollection.find(query)
-            const result2 = await cursor.toArray()
-            res.send(result2)
+            const result = await cursor.toArray()
+            const count = await serviceCollection.estimatedDocumentCount()
+            res.send({ result, count })
         })
         app.get('/services/:id', async (req, res) => {
             const id = req.params.id
             const query = { _id: ObjectId(id) }
             const cursor = serviceCollection.find(query)
-            // const result2 = await cursor.limit(3).toArray()
             const result2 = await cursor.toArray()
             res.send(result2)
         })
