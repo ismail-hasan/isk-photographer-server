@@ -27,6 +27,12 @@ async function run() {
         const reviewCollection = client.db('reviewData').collection('allReviewData')
 
 
+        // JWT WEB TOKEN 
+        app.post('/jwt', (req, res) => {
+            const user = req.body
+            console.log(user)
+        })
+
         // review data api review 
         app.post('/review', async (req, res) => {
             const user = req.body
@@ -37,7 +43,7 @@ async function run() {
 
         app.get('/review', async (req, res) => {
             console.log(req.query.seviceid)
-            
+
             let query = {}
             if (req.query.seviceid) {
                 query = {
