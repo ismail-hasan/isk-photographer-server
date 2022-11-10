@@ -61,20 +61,25 @@ async function run() {
         })
 
 
-
         app.get('/limitservice', async (req, res) => {
             const query = {}
             const cursor = serviceCollection.find(query)
             const result = await cursor.limit(3).toArray()
             res.send(result)
         })
-        //
+
+
+        //services
+
+
+
+
         app.get('/services', async (req, res) => {
             const query = {}
             const cursor = serviceCollection.find(query)
             const result = await cursor.toArray()
-            const count = await serviceCollection.estimatedDocumentCount()
-            res.send({ result, count })
+            // const count = await serviceCollection.estimatedDocumentCount()
+            res.send(result)
         })
         app.get('/services/:id', async (req, res) => {
             const id = req.params.id
@@ -83,8 +88,11 @@ async function run() {
             const result2 = await cursor.toArray()
             res.send(result2)
         })
-
-
+        app.post('/services', async (req, res) => {
+            const user = req.body
+            const results = await serviceCollection.insertOne(user)
+            res.send(results)
+        })
 
     }
     finally {
