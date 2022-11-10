@@ -27,12 +27,21 @@ async function run() {
         const reviewCollection = client.db('reviewData').collection('allReviewData')
 
 
-        // form data api review 
+        // review data api review 
         app.post('/review', async (req, res) => {
             const user = req.body
             const result = await reviewCollection.insertOne(user)
             res.send(result)
         })
+
+        // app.get('/review', async (req, res) => {
+        //     const id = req.query.id
+        //     console.log(id)
+        //     const query = { _id: ObjectId(id) }
+        //     const result = await reviewCollection.findOne(query)
+        //     res.send(result)
+
+        // })
 
         app.get('/review', async (req, res) => {
             console.log(req.query.seviceid)
@@ -52,10 +61,14 @@ async function run() {
             const result = await cursor.toArray()
             res.send(result)
         })
+
+
+
         // delete method 
         app.delete('/review/:id', async (req, res) => {
             const id = req.params.id
-            const query = { seviceid: id }
+            const query = { _id: ObjectId(id) }
+            // const query = { seviceid: id }
             const result = await reviewCollection.deleteOne(query)
             res.send(result)
         })
