@@ -34,17 +34,10 @@ async function run() {
             res.send(result)
         })
 
-        // app.get('/review', async (req, res) => {
-        //     const id = req.query.id
-        //     console.log(id)
-        //     const query = { _id: ObjectId(id) }
-        //     const result = await reviewCollection.findOne(query)
-        //     res.send(result)
-
-        // })
 
         app.get('/review', async (req, res) => {
             console.log(req.query.seviceid)
+            
             let query = {}
             if (req.query.seviceid) {
                 query = {
@@ -56,6 +49,7 @@ async function run() {
                     email: req.query.email
                 }
             }
+
             console.log(req.query.email)
             const cursor = reviewCollection.find(query)
             const result = await cursor.toArray()
@@ -81,17 +75,12 @@ async function run() {
             res.send(result)
         })
 
-
         //services
-
-
-
 
         app.get('/services', async (req, res) => {
             const query = {}
             const cursor = serviceCollection.find(query)
             const result = await cursor.toArray()
-            // const count = await serviceCollection.estimatedDocumentCount()
             res.send(result)
         })
         app.get('/services/:id', async (req, res) => {
